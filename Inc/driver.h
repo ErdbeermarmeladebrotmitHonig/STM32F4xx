@@ -165,6 +165,8 @@
   #include "boards/longboard32_map.h"
 #elif defined(BOARD_MKS_EAGLE)
   #include "boards/mks_eagle_map.h"
+#elif defined(BOARD_BTT_OCTOPUS_1_1)
+  #include "boards/btt_octopus_1_1.h"
 #elif defined(BOARD_MY_MACHINE)
   #include "boards/my_machine_map.h"
 #else // default board
@@ -287,11 +289,12 @@
 
 // End configuration
 
-#if EEPROM_ENABLE == 0
-#define FLASH_ENABLE 1
-#else
+// #if EEPROM_ENABLE == 0
+// #define FLASH_ENABLE 1
+// #else
+// #define FLASH_ENABLE 0
+// #endif
 #define FLASH_ENABLE 0
-#endif
 
 #if USB_SERIAL_CDC && defined(SERIAL_PORT)
 #define SP0 1

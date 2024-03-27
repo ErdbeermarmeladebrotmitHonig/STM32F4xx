@@ -36,6 +36,7 @@
 //#define BOARD_BTT_SKR_20          // F407 based 3D Printer board
 //#define BOARD_BTT_SKR_20_DAC      // F407 based 3D Printer board, uses analog output (DAC) for spindle speed control
 //#define BOARD_FYSETC_S6           // F446 based 3D Printer board
+#define BOARD_BTT_OCTOPUS_1_1     // F446 based 3D Printer board
 //#define BOARD_FLEXI_HAL           // F446 CNC board
 //#define BOARD_LONGBOARD32         // F412 Sienci SLB
 //#define BOARD_STM32F401_UNI       // F401 CNC board
@@ -70,7 +71,7 @@
 // Spindle definitions can be found in grbl/spindle_control.h.
 // More here https://github.com/grblHAL/Plugins_spindle
 //#define SPINDLE0_ENABLE      SPINDLE_ALL
-//#define SPINDLE0_ENABLE      SPINDLE_PWM0_NODIR
+#define SPINDLE0_ENABLE      SPINDLE_PWM0_NODIR
 //#define SPINDLE2_ENABLE      SPINDLE_NONE
 //#define SPINDLE3_ENABLE      SPINDLE_NONE
 // **********************
@@ -90,16 +91,16 @@
 //#define MACROS_ENABLE        1 // Macros plugin. For macros that can be triggered by keypad plugin or auxillary inputs.
                                  // Set to 1 for aux input triggers, 2 for keypad triggers or 3 for both.
 //#define N_MACROS             1 // Number of macros to enable, max 8. If commented out default is 4 when triggered by aux inputs, 8 otherwise.
-//#define ODOMETER_ENABLE      1 // Odometer plugin.
+#define ODOMETER_ENABLE      1 // Odometer plugin.
 //#define PLASMA_ENABLE        1 // Plasma (THC) plugin. To be completed.
 //#define EMBROIDERY_ENABLE    1 // Embroidery plugin. To be completed.
-//#define PPI_ENABLE           1 // Laser PPI plugin. To be completed.
+#define PPI_ENABLE           1 // Laser PPI plugin. To be completed.
 //#define LASER_COOLANT_ENABLE 1 // Laser coolant plugin. To be completed.
 //#define TRINAMIC_ENABLE   2130 // Trinamic TMC2130 stepper driver support.
 //#define TRINAMIC_ENABLE   5160 // Trinamic TMC5160 stepper driver support.
-//#define TRINAMIC_ENABLE   2209 // Trinamic TMC2209 stepper driver support.
+#define TRINAMIC_ENABLE   2209 // Trinamic TMC2209 stepper driver support.
 //#define TRINAMIC_ENABLE   2660 // Trinamic TMC2660 stepper driver support.
-//#define TRINAMIC_R_SENSE   110 // R sense resistance in milliohms, 2130 and 2209 default is 110, 5160 is 75.
+#define TRINAMIC_R_SENSE   110 // R sense resistance in milliohms, 2130 and 2209 default is 110, 5160 is 75.
 //#define TRINAMIC_I2C         1 // Trinamic I2C - SPI bridge interface.
 //#define TRINAMIC_DEV         1 // Development mode, adds a few M-codes to aid debugging. Do not enable in production code.
 //#define FANS_ENABLE          1 // Enable fan control via M106/M107. Enables fans plugin.
@@ -127,10 +128,10 @@
 /**/
 // If the selected board map supports more than three motors ganging and/or auto-squaring
 // of axes can be enabled here.
-//#define X_GANGED            1
-//#define X_AUTO_SQUARE       1
-//#define Y_GANGED            1
-//#define Y_AUTO_SQUARE       1
+#define X_GANGED            1
+#define X_AUTO_SQUARE       1
+#define Y_GANGED            1
+#define Y_AUTO_SQUARE       1
 //#define Z_GANGED            1
 //#define Z_AUTO_SQUARE       1
 // For ganged axes the limit switch input (if available) can be configured to act as a max travel limit switch.

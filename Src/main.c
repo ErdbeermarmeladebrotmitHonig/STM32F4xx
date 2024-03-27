@@ -179,6 +179,43 @@ static void SystemClock_Config (void)
     #define APB2CLKDIV RCC_HCLK_DIV1
     #define FLASH_LATENCY FLASH_LATENCY_5
 
+  #elif defined(BOARD_BTT_OCTOPUS_1_1)
+
+  __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
+
+  /** Initializes the CPU, AHB and APB buses clocks
+  */
+  RCC_ClkInitTypeDef RCC_ClkPreInitStruct = {
+	  .ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
+	  	  	  |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2,
+	  .SYSCLKSource = RCC_SYSCLKSOURCE_HSI,
+	  .AHBCLKDivider = RCC_SYSCLK_DIV1,
+	  .APB1CLKDivider = RCC_HCLK_DIV4,
+	  .APB2CLKDivider = RCC_HCLK_DIV2
+  };
+
+  if (HAL_RCC_ClockConfig(&RCC_ClkPreInitStruct, FLASH_LATENCY_0) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  RCC_OscInitTypeDef RCC_OscInitStruct = {
+      .OscillatorType = RCC_OSCILLATORTYPE_HSE,
+      .HSEState = RCC_HSE_ON,
+      .PLL.PLLState = RCC_PLL_ON,
+      .PLL.PLLSource = RCC_PLLSOURCE_HSE,
+      .PLL.PLLM = 6, // Input clock divider (12MHz crystal)
+      .PLL.PLLN = 180, // Main clock multiplier
+      .PLL.PLLP = RCC_PLLP_DIV2, // Main clock divider =
+      .PLL.PLLQ = 8, // Special peripheral (USB) clock divider (relative to main clock multiplier) = USB clock 48MHz
+      .PLL.PLLR = 2
+  };
+
+  #define APB1CLKDIV RCC_HCLK_DIV4
+  #define APB2CLKDIV RCC_HCLK_DIV2
+  #define FLASH_LATENCY FLASH_LATENCY_5
+  #define SYSCLKSRC RCC_SYSCLKSOURCE_PLLRCLK
+
   #else
 
     __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
@@ -335,7 +372,7 @@ static void SystemClock_Config (void)
         Error_Handler();
     }
 
-#if defined(NUCLEO144_F446)
+#if defined(NUCLEO144_F446) || defined(BOARD_BTT_OCTOPUS_1_1)
 
     if (HAL_PWREx_EnableOverDrive() != HAL_OK)
     {
@@ -392,6 +429,14 @@ static void SystemClock_Config (void)
         .Clk48ClockSelection = RCC_CLK48CLKSOURCE_PLLI2SQ,
         .SdioClockSelection = RCC_SDIOCLKSOURCE_CLK48,
         .PLLI2SSelection = RCC_PLLI2SCLKSOURCE_PLLSRC
+  #elif defined(BOARD_BTT_OCTOPUS_1_1)
+        .PeriphClockSelection = RCC_PERIPHCLK_CLK48,
+        .PLLSAI.PLLSAIM = 6,
+        .PLLSAI.PLLSAIN = 96,
+        .PLLSAI.PLLSAIQ = 2,
+        .PLLSAI.PLLSAIP = RCC_PLLSAIP_DIV4,
+        .PLLSAIDivQ = 1,
+        .Clk48ClockSelection = RCC_CLK48CLKSOURCE_PLLSAIP
   #else
         .PeriphClockSelection = RCC_PERIPHCLK_CLK48,
         .Clk48ClockSelection = RCC_CLK48CLKSOURCE_PLLQ
