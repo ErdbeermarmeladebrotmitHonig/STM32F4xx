@@ -37,6 +37,7 @@
 //#define BOARD_BTT_SKR_20_DAC      // F407 based 3D Printer board, uses analog output (DAC) for spindle speed control
 //#define BOARD_FYSETC_S6           // F446 based 3D Printer board
 #define BOARD_BTT_OCTOPUS_1_1     // F446 based 3D Printer board
+//#define BOARD_BTT_OCTOPUS_PRO     // F446 based 3D Printer board
 //#define BOARD_FLEXI_HAL           // F446 CNC board
 //#define BOARD_LONGBOARD32         // F412 Sienci SLB
 //#define BOARD_STM32F401_UNI       // F401 CNC board
@@ -103,7 +104,7 @@
 #define TRINAMIC_R_SENSE   110 // R sense resistance in milliohms, 2130 and 2209 default is 110, 5160 is 75.
 //#define TRINAMIC_I2C         1 // Trinamic I2C - SPI bridge interface.
 //#define TRINAMIC_DEV         1 // Development mode, adds a few M-codes to aid debugging. Do not enable in production code.
-//#define FANS_ENABLE          1 // Enable fan control via M106/M107. Enables fans plugin.
+#define FANS_ENABLE          1 // Enable fan control via M106/M107. Enables fans plugin.
 //#define EEPROM_ENABLE       16 // I2C EEPROM/FRAM support. Set to 16 for 2K, 32 for 4K, 64 for 8K, 128 for 16K and 256 for 32K capacity.
 //#define EEPROM_IS_FRAM       1 // Uncomment when EEPROM is enabled and chip is FRAM, this to remove write delay.
 //#define SPINDLE_SYNC_ENABLE  1 // Enable spindle sync support (G33, G76). !! NOTE: Alpha quality - enable only for test or verification.

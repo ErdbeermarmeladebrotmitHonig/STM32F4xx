@@ -179,7 +179,7 @@ static void SystemClock_Config (void)
     #define APB2CLKDIV RCC_HCLK_DIV1
     #define FLASH_LATENCY FLASH_LATENCY_5
 
-  #elif defined(BOARD_BTT_OCTOPUS_1_1)
+  #elif defined(BOARD_BTT_OCTOPUS_1_1) || defined(BOARD_BTT_OCTOPUS_PRO)
 
   __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
 
@@ -372,7 +372,7 @@ static void SystemClock_Config (void)
         Error_Handler();
     }
 
-#if defined(NUCLEO144_F446) || defined(BOARD_BTT_OCTOPUS_1_1)
+#if defined(NUCLEO144_F446) || defined(BOARD_BTT_OCTOPUS_1_1) || defined(BOARD_BTT_OCTOPUS_PRO)
 
     if (HAL_PWREx_EnableOverDrive() != HAL_OK)
     {
@@ -429,7 +429,7 @@ static void SystemClock_Config (void)
         .Clk48ClockSelection = RCC_CLK48CLKSOURCE_PLLI2SQ,
         .SdioClockSelection = RCC_SDIOCLKSOURCE_CLK48,
         .PLLI2SSelection = RCC_PLLI2SCLKSOURCE_PLLSRC
-  #elif defined(BOARD_BTT_OCTOPUS_1_1)
+  #elif defined(BOARD_BTT_OCTOPUS_1_1) || defined(BOARD_BTT_OCTOPUS_PRO)
         .PeriphClockSelection = RCC_PERIPHCLK_CLK48,
         .PLLSAI.PLLSAIM = 6,
         .PLLSAI.PLLSAIN = 96,
