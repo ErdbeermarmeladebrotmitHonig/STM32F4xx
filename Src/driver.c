@@ -618,7 +618,7 @@ static void stepperEnable (axes_signals_t enable)
 // Starts stepper driver ISR timer and forces a stepper driver interrupt callback
 static void stepperWakeUp (void)
 {
-    stepperEnable((axes_signals_t){AXES_BITMASK});
+    hal.stepper.enable((axes_signals_t){AXES_BITMASK});
 
     STEPPER_TIMER->ARR = hal.f_step_timer / 500; // ~2ms delay to allow drivers time to wake up.
     STEPPER_TIMER->EGR = TIM_EGR_UG;
@@ -1117,14 +1117,15 @@ static void limitsEnable (bool on, axes_signals_t homing_cycle)
     uint_fast8_t idx = limit_inputs.n_pins;
     limit_signals_t homing_source = xbar_get_homing_source_from_cycle(homing_cycle);
 
-    do {
-        limit = &limit_inputs.pins.inputs[--idx];
+    while(idx--) {
+        limit = &limit_inputs.pins.inputs[idx];
         if(on && homing_cycle.mask) {
             pin = xbar_fn_to_axismask(limit->id);
             disable = limit->group == PinGroup_Limit ? (pin.mask & homing_source.min.mask) : (pin.mask & homing_source.max.mask);
         }
         gpio_irq_enable(limit, disable ? IRQ_Mode_None : limit->mode.irq_mode);
-    } while(idx);
+        report_message(uitoa(idx), Message_Plain);
+    };
 
 #ifdef Z_LIMIT_POLL
     z_limits_irq_enabled = on && !homing_cycle.z;
@@ -2296,7 +2297,7 @@ static bool driver_setup (settings_t *settings)
     uint32_t i;
 
     // Switch on stepper driver power before enabling other output pins
-    for(i = 0 ; i < sizeof(outputpin) / sizeof(output_signal_t); i++) {
+    for(i = 0; i < sizeof(outputpin) / sizeof(output_signal_t); i++) {
         if(outputpin[i].group == PinGroup_StepperPower) {
             GPIO_Init.Pin = 1 << outputpin[i].pin;
             GPIO_Init.Mode = outputpin[i].mode.open_drain ? GPIO_MODE_OUTPUT_OD : GPIO_MODE_OUTPUT_PP;
@@ -2307,7 +2308,7 @@ static bool driver_setup (settings_t *settings)
 
     hal.delay_ms(100, NULL);
 
-    for(i = 0 ; i < sizeof(outputpin) / sizeof(output_signal_t); i++) {
+    for(i = 0; i < sizeof(outputpin) / sizeof(output_signal_t); i++) {
         if(!(outputpin[i].group == PinGroup_StepperPower ||
               outputpin[i].group == PinGroup_AuxOutputAnalog ||
                outputpin[i].id == Output_SpindlePWM ||
@@ -2626,7 +2627,7 @@ bool driver_init (void)
 #else
     hal.info = "STM32F401";
 #endif
-    hal.driver_version = "240314";
+    hal.driver_version = "240404";
     hal.driver_url = GRBL_URL "/STM32F4xx";
 #ifdef BOARD_NAME
     hal.board = BOARD_NAME;
@@ -2751,8 +2752,11 @@ bool driver_init (void)
 #if SPINDLE_SYNC_ENABLE
     hal.driver_cap.spindle_sync = On;
 #endif
+#ifdef COOLANT_FLOOD_PIN
+    hal.coolant_cap.flood = On;
+#endif
 #ifdef COOLANT_MIST_PIN
-    hal.driver_cap.mist_control = On;
+    hal.coolant_cap.mist = On;
 #endif
     hal.driver_cap.software_debounce = On;
     hal.driver_cap.step_pulse_delay = On;
@@ -2766,7 +2770,7 @@ bool driver_init (void)
     uint32_t i;
     input_signal_t *input;
 
-    for(i = 0 ; i < sizeof(inputpin) / sizeof(input_signal_t); i++) {
+    for(i = 0; i < sizeof(inputpin) / sizeof(input_signal_t); i++) {
         input = &inputpin[i];
         input->mode.input = input->cap.input = On;
         input->bit = 1 << input->pin;
