@@ -47,10 +47,6 @@
 #define I2C_PORT                    1
 #define EEPROM_ENABLE               32
 
-// // SD Card
-// #undef SDCARD_ENABLE
-// #define SDCARD_ENABLE 0
-
 // call board_init when tmc drivers are used
 #if TRINAMIC_ENABLE
 #define HAS_BOARD_INIT
