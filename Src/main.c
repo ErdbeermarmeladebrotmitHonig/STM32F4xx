@@ -199,6 +199,27 @@ static void SystemClock_Config (void)
     Error_Handler();
   }
 
+  #if HSE_VALUE == 8000000  // 8 MHz Crystal for STM32F429
+
+  RCC_OscInitTypeDef RCC_OscInitStruct = {
+      .OscillatorType = RCC_OSCILLATORTYPE_HSE,
+      .HSEState = RCC_HSE_ON,
+      .PLL.PLLState = RCC_PLL_ON,
+      .PLL.PLLSource = RCC_PLLSOURCE_HSE,
+      .PLL.PLLM = 8, // Input clock divider (12MHz crystal)
+      .PLL.PLLN = 336, // Main clock multiplier
+      .PLL.PLLP = RCC_PLLP_DIV2, // Main clock divider =
+      .PLL.PLLQ = 7, // Special peripheral (USB) clock divider (relative to main clock multiplier) = USB clock 48MHz
+      .PLL.PLLR = 2
+  };
+
+  #define APB1CLKDIV RCC_HCLK_DIV4
+  #define APB2CLKDIV RCC_HCLK_DIV2
+  #define FLASH_LATENCY FLASH_LATENCY_5
+  #define SYSCLKSRC RCC_SYSCLKSOURCE_PLLCLK
+  
+  #elif HSE_VALUE == 12000000 // 12 MHz Crystal for STM32F446
+
   RCC_OscInitTypeDef RCC_OscInitStruct = {
       .OscillatorType = RCC_OSCILLATORTYPE_HSE,
       .HSEState = RCC_HSE_ON,
@@ -215,6 +236,8 @@ static void SystemClock_Config (void)
   #define APB2CLKDIV RCC_HCLK_DIV2
   #define FLASH_LATENCY FLASH_LATENCY_5
   #define SYSCLKSRC RCC_SYSCLKSOURCE_PLLRCLK
+
+  #endif
 
   #else
 
