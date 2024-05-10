@@ -13,7 +13,7 @@
 
 #include "driver.h"
 
-#if SDCARD_ENABLE
+#if 0   // not working for me!
 
 #include <stdint.h>
 #include <stdbool.h>
