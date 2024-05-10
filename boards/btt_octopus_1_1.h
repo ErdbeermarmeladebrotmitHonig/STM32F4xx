@@ -25,7 +25,7 @@
 #error "BTT Octopus supports 8 motors max."
 #endif
 
-#if !defined(STM32F446xx) || HSE_VALUE != 12000000
+#if !(defined(STM32F446xx) || defined(STM32F429xx)) || HSE_VALUE != 12000000
 #error "This board has STM32F446 processor with a 12MHz crystal, select a corresponding build!"
 #endif
 
