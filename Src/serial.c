@@ -4,20 +4,20 @@
 
   Part of grblHAL
 
-  Copyright (c) 2019-2023 Terje Io
+  Copyright (c) 2019-2024 Terje Io
 
-  Grbl is free software: you can redistribute it and/or modify
+  grblHAL is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation, either version 3 of the License, or
   (at your option) any later version.
 
-  Grbl is distributed in the hope that it will be useful,
+  grblHAL is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with Grbl.  If not, see <http://www.gnu.org/licenses/>.
+  along with grblHAL. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
@@ -125,9 +125,15 @@ static const io_stream_t *serial2Init(uint32_t baud_rate);
 #define UART0_PORT GPIOD
 #define UART0_AF GPIO_AF7_USART3
 #elif SERIAL_PORT == 33
-#define UART0_TX_PIN 10
+#define UART0_TX_PIN 8
 #define UART0_RX_PIN 5
 #define UART0_PORT GPIOC
+#define UART0_AF GPIO_AF7_USART3
+#elif SERIAL_PORT == 34
+#define UART0_TX_PIN 8
+#define UART0_RX_PIN 5
+#define UART0_TX_PORT GPIOD
+#define UART0_RX_PORT GPIOC
 #define UART0_AF GPIO_AF7_USART3
 #elif SERIAL_PORT == 6
 #define UART0_TX_PIN 6
@@ -136,6 +142,11 @@ static const io_stream_t *serial2Init(uint32_t baud_rate);
 #define UART0_AF GPIO_AF8_USART6
 #else
 #error Code has to be added to support serial port
+#endif
+
+#ifdef UART0_PORT
+#define UART0_TX_PORT UART0_PORT
+#define UART0_RX_PORT UART0_PORT
 #endif
 
 #endif // SERIAL_PORT
@@ -213,6 +224,12 @@ static const io_stream_t *serial2Init(uint32_t baud_rate);
 #define UART1_RX_PIN 5
 #define UART1_PORT GPIOC
 #define UART1_AF GPIO_AF7_USART3
+#elif SERIAL_PORT == 34
+#define UART1_TX_PIN 8
+#define UART1_RX_PIN 5
+#define UART1_TX_PORT GPIOD
+#define UART1_RX_PORT GPIOC
+#define UART1_AF GPIO_AF7_USART3
 #elif SERIAL1_PORT == 6
 #define UART1_TX_PIN 6
 #define UART1_RX_PIN 7
@@ -220,6 +237,11 @@ static const io_stream_t *serial2Init(uint32_t baud_rate);
 #define UART1_AF GPIO_AF8_USART6
 #else
 #error Code has to be added to support serial port 1
+#endif
+
+#ifdef UART1_PORT
+#define UART1_TX_PORT UART1_PORT
+#define UART1_RX_PORT UART1_PORT
 #endif
 
 #endif // SERIAL1_PORT
@@ -297,6 +319,12 @@ static const io_stream_t *serial2Init(uint32_t baud_rate);
 #define UART2_RX_PIN 5
 #define UART2_PORT GPIOC
 #define UART2_AF GPIO_AF7_USART3
+#elif SERIAL_PORT == 34
+#define UART2_TX_PIN 8
+#define UART2_RX_PIN 5
+#define UART2_TX_PORT GPIOD
+#define UART2_RX_PORT GPIOC
+#define UART2_AF GPIO_AF7_USART3
 #elif SERIAL2_PORT == 6
 #define UART2_TX_PIN 6
 #define UART2_RX_PIN 7
@@ -304,6 +332,11 @@ static const io_stream_t *serial2Init(uint32_t baud_rate);
 #define UART2_AF GPIO_AF8_USART6
 #else
 #error Code has to be added to support serial port 2
+#endif
+
+#ifdef UART2_PORT
+#define UART2_TX_PORT UART2_PORT
+#define UART2_RX_PORT UART2_PORT
 #endif
 
 #endif // SERIAL2_PORT
@@ -315,7 +348,6 @@ static io_stream_properties_t serial[] = {
       .instance = 0,
       .flags.claimable = On,
       .flags.claimed = Off,
-      .flags.connected = On,
       .flags.can_set_baud = On,
       .flags.modbus_ready = On,
       .claim = serialInit
@@ -327,7 +359,6 @@ static io_stream_properties_t serial[] = {
       .instance = 1,
       .flags.claimable = On,
       .flags.claimed = Off,
-      .flags.connected = On,
       .flags.can_set_baud = On,
       .flags.modbus_ready = On,
       .claim = serial1Init
@@ -339,7 +370,6 @@ static io_stream_properties_t serial[] = {
       .instance = 2,
       .flags.claimable = On,
       .flags.claimed = Off,
-      .flags.connected = On,
       .flags.can_set_baud = On,
       .flags.modbus_ready = On,
       .claim = serial2Init
@@ -359,7 +389,7 @@ void serialRegisterStreams (void)
     static const periph_pin_t tx0 = {
         .function = Output_TX,
         .group = PinGroup_UART1,
-        .port  = UART0_PORT,
+        .port  = UART0_TX_PORT,
         .pin   = UART0_TX_PIN,
         .mode  = { .mask = PINMODE_OUTPUT },
         .description = "UART1"
@@ -368,7 +398,7 @@ void serialRegisterStreams (void)
     static const periph_pin_t rx0 = {
         .function = Input_RX,
         .group = PinGroup_UART1,
-        .port = UART0_PORT,
+        .port = UART0_RX_PORT,
         .pin = UART0_RX_PIN,
         .mode = { .mask = PINMODE_NONE },
         .description = "UART1"
@@ -384,7 +414,7 @@ void serialRegisterStreams (void)
     static const periph_pin_t tx1 = {
         .function = Output_TX,
         .group = PinGroup_UART2,
-        .port  = UART1_PORT,
+        .port  = UART1_TX_PORT,
         .pin   = UART1_TX_PIN,
         .mode  = { .mask = PINMODE_OUTPUT },
         .description = "UART2"
@@ -393,7 +423,7 @@ void serialRegisterStreams (void)
     static const periph_pin_t rx1 = {
         .function = Input_RX,
         .group = PinGroup_UART2,
-        .port = UART1_PORT,
+        .port = UART1_RX_PORT,
         .pin = UART1_RX_PIN,
         .mode = { .mask = PINMODE_NONE },
         .description = "UART2"
@@ -409,7 +439,7 @@ void serialRegisterStreams (void)
     static const periph_pin_t tx2 = {
         .function = Output_TX,
         .group = PinGroup_UART3,
-        .port  = UART2_PORT,
+        .port  = UART2_TX_PORT,
         .pin   = UART2_TX_PIN,
         .mode  = { .mask = PINMODE_OUTPUT },
         .description = "UART3"
@@ -418,7 +448,7 @@ void serialRegisterStreams (void)
     static const periph_pin_t rx2 = {
         .function = Input_RX,
         .group = PinGroup_UART3,
-        .port = UART2_PORT,
+        .port = UART2_RX_PORT,
         .pin = UART2_RX_PIN,
         .mode = { .mask = PINMODE_NONE },
         .description = "UART3"
@@ -611,7 +641,7 @@ static const io_stream_t *serialInit (uint32_t baud_rate)
 {
     static const io_stream_t stream = {
         .type = StreamType_Serial,
-        .state.connected = On,
+        .is_connected = stream_connected,
         .read = serialGetC,
         .write = serialWriteS,
         .write_n =  serialWrite,
@@ -634,6 +664,8 @@ static const io_stream_t *serialInit (uint32_t baud_rate)
 
     UART0_CLK_En();
 
+#ifdef UART0_PORT
+
     GPIO_InitTypeDef GPIO_InitStructure = {
         .Mode      = GPIO_MODE_AF_PP,
         .Pull      = GPIO_NOPULL,
@@ -642,6 +674,22 @@ static const io_stream_t *serialInit (uint32_t baud_rate)
         .Alternate = UART0_AF
     };
     HAL_GPIO_Init(UART0_PORT, &GPIO_InitStructure);
+
+#else
+
+    GPIO_InitTypeDef GPIO_InitStructure = {
+        .Mode      = GPIO_MODE_AF_PP,
+        .Pull      = GPIO_NOPULL,
+        .Speed     = GPIO_SPEED_FREQ_VERY_HIGH,
+        .Pin       = (1 << UART0_TX_PIN),
+        .Alternate = UART0_AF
+    };
+    HAL_GPIO_Init(UART0_TX_PORT, &GPIO_InitStructure);
+
+    GPIO_InitStructure.Pin = (1 << UART0_RX_PIN),
+    HAL_GPIO_Init(UART0_RX_PORT, &GPIO_InitStructure);
+
+#endif
 
     serialSetBaudRate(baud_rate);
 
@@ -838,7 +886,7 @@ static const io_stream_t *serial1Init (uint32_t baud_rate)
     static const io_stream_t stream = {
         .type = StreamType_Serial,
         .instance = 1,
-        .state.connected = On,
+        .is_connected = stream_connected,
         .read = serial1GetC,
         .write = serial1WriteS,
         .write_n =  serial1Write,
@@ -861,6 +909,8 @@ static const io_stream_t *serial1Init (uint32_t baud_rate)
 
     UART1_CLK_En();
 
+#ifdef UART1_PORT
+
     GPIO_InitTypeDef GPIO_InitStructure = {
         .Mode      = GPIO_MODE_AF_PP,
         .Pull      = GPIO_NOPULL,
@@ -869,6 +919,22 @@ static const io_stream_t *serial1Init (uint32_t baud_rate)
         .Alternate = UART1_AF
     };
     HAL_GPIO_Init(UART1_PORT, &GPIO_InitStructure);
+
+#else
+
+    GPIO_InitTypeDef GPIO_InitStructure = {
+        .Mode      = GPIO_MODE_AF_PP,
+        .Pull      = GPIO_NOPULL,
+        .Speed     = GPIO_SPEED_FREQ_VERY_HIGH,
+        .Pin       = (1 << UART1_TX_PIN),
+        .Alternate = UART1_AF
+    };
+    HAL_GPIO_Init(UART1_TX_PORT, &GPIO_InitStructure);
+
+    GPIO_InitStructure.Pin = (1 << UART1_RX_PIN),
+    HAL_GPIO_Init(UART1_RX_PORT, &GPIO_InitStructure);
+
+#endif
 
     serial1SetBaudRate(baud_rate);
 
@@ -1066,7 +1132,7 @@ static const io_stream_t *serial2Init (uint32_t baud_rate)
     static const io_stream_t stream = {
         .type = StreamType_Serial,
         .instance = 2,
-        .state.connected = On,
+        .is_connected = stream_connected,
         .read = serial2GetC,
         .write = serial2WriteS,
         .write_n =  serial2Write,
@@ -1089,6 +1155,8 @@ static const io_stream_t *serial2Init (uint32_t baud_rate)
 
     UART2_CLK_En();
 
+#ifdef UART2_PORT
+
     GPIO_InitTypeDef GPIO_InitStructure = {
         .Mode      = GPIO_MODE_AF_PP,
         .Pull      = GPIO_NOPULL,
@@ -1097,6 +1165,22 @@ static const io_stream_t *serial2Init (uint32_t baud_rate)
         .Alternate = UART2_AF
     };
     HAL_GPIO_Init(UART2_PORT, &GPIO_InitStructure);
+
+#else
+
+    GPIO_InitTypeDef GPIO_InitStructure = {
+        .Mode      = GPIO_MODE_AF_PP,
+        .Pull      = GPIO_NOPULL,
+        .Speed     = GPIO_SPEED_FREQ_VERY_HIGH,
+        .Pin       = (21 << UART2_TX_PIN),
+        .Alternate = UART2_AF
+    };
+    HAL_GPIO_Init(UART2_TX_PORT, &GPIO_InitStructure);
+
+    GPIO_InitStructure.Pin = (1 << UART2_RX_PIN),
+    HAL_GPIO_Init(UART2_RX_PORT, &GPIO_InitStructure);
+
+#endif
 
     serial2SetBaudRate(baud_rate);
 
